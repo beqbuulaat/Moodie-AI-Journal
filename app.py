@@ -33,8 +33,9 @@ def webhook():
             else:
                 send_message(chat_id, "У тебя пока нет записей.")
         else:
-            mood = analyze_mood(text)
-            save_entry(chat_id, text, mood)
+            #mood = analyze_mood(text)
+            #save_entry(chat_id, text, mood)
+            mood = "радостное"
             response = f"Я чувствую, что твоё настроение — {mood}. Спасибо за доверие ❤️"
             send_message(chat_id, response)
 
