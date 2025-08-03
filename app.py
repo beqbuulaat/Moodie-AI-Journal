@@ -1,9 +1,9 @@
 from flask import Flask, request
 import requests
 import os
-from mood_analyzer import analyze_mood
-from mood_storage import save_entry
-from mood_plotter import create_mood_graph
+#from mood_analyzer import analyze_mood
+#from mood_storage import save_entry
+#from mood_plotter import create_mood_graph
 
 app = Flask(__name__)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
