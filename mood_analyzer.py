@@ -30,11 +30,17 @@ def analyze_mood(text):
             {"role": "user", "content": prompt}
         ]
     }
-
     try:
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=body)
-        mood = response.json()["choices"][0]["message"]["content"].strip().lower()
+    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=body)
+    data = response.json()
+    print("🔎 Ответ от OpenRouter:", data)  # ← ПОКАЖЕТ тебе, что реально пришло
+
+    if "choices" in data:
+        mood = data["choices"][0]["message"]["content"].strip().lower()
         return mood
-    except Exception as e:
-        print("❌ Ошибка AI анализа:", e)
+    else:
+        print("⚠️ В ответе нет поля 'choices'")
         return "неизвестно"
+except Exception as e:
+    print("❌ Ошибка AI запроса:", e)
+    return "неизвестно"
