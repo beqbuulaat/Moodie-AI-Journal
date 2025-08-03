@@ -1,12 +1,12 @@
 from flask import Flask, request
 import requests
 import os
+from mood_analyzer import analyze_mood
+from mood_plotter import create_mood_graph
 
 app = Flask(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    print("⚠️ BOT_TOKEN is not set!")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 @app.route("/")
@@ -16,19 +16,26 @@ def index():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.get_json()
-    print("📩 Received:", data)
+    print("📩 Получено сообщение:", data)
 
     if not data or "message" not in data:
         return {"ok": False}, 400
 
     chat_id = data["message"]["chat"]["id"]
     text = data["message"].get("text", "")
-    happy_words = ["счастлив", "рад", "весело", "отлично", "норм", "кайф", "улыбка", "круто", "хорошо", "супер", "удовлетворен", "кайфую"]
 
     if text == "/start":
         send_message(chat_id, "Привет! Я — Moodie 😊 Напиши, как ты себя чувствуешь сегодня.")
+
+    elif text == "/graph":
+        path = create_mood_graph(chat_id)
+        if path:
+            send_photo(chat_id, path)
+        else:
+            send_message(chat_id, "У тебя пока нет записей 😔")
+
     else:
-        mood = "радостное" if "😊" in text or "счастлив" in text else "грустное"
+        mood = analyze_mood(text)
         send_message(chat_id, f"Я чувствую, что твоё настроение — {mood}.")
 
     return {"ok": True}
@@ -39,6 +46,18 @@ def send_message(chat_id, text):
             f"{TELEGRAM_API_URL}/sendMessage",
             json={"chat_id": chat_id, "text": text}
         )
-        print("📤 Sent:", resp.text)
+        print("📤 Ответ отправлен:", resp.text)
     except Exception as e:
-        print("❌ Error:", e)
+        print("❌ Ошибка отправки сообщения:", e)
+
+def send_photo(chat_id, file_path):
+    try:
+        with open(file_path, 'rb') as photo:
+            resp = requests.post(
+                f"{TELEGRAM_API_URL}/sendPhoto",
+                data={"chat_id": chat_id},
+                files={"photo": photo}
+            )
+            print("📷 Фото отправлено:", resp.text)
+    except Exception as e:
+        print("❌ Ошибка отправки фото:", e)
