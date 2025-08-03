@@ -1,58 +1,68 @@
-# Moodie — AI Mood Journal 🤖🧠
+# 🤖 Moodie — AI Mood Journal Telegram Bot
 
-**Moodie** — это Telegram-бот, который помогает пользователю отслеживать своё настроение и визуализировать эмоциональные состояния.  
-Он использует NLP-анализ текста (TextBlob), сохраняет историю и строит графики на основе ваших сообщений.
-
----
-
-## 📦 Структура проекта
-
-```
-Moodie-AI-Journal/
-├── app.py              # Flask-приложение и Telegram Webhook
-├── mood_analyzer.py    # Анализ настроения текста
-├── mood_storage.py     # Хранение данных в JSON
-├── mood_plotter.py     # Построение графиков с matplotlib
-├── requirements.txt    # Зависимости проекта
-└── .env.example        # Пример .env файла с BOT_TOKEN
-```
+Moodie is a smart AI-powered Telegram bot that helps users reflect on their emotions and track their mood over time. Built with Flask and deployed on Render, Moodie uses the **Gemini 2.5 Flash Lite** model via OpenRouter API to analyze emotions in real time.
 
 ---
 
-## 🚀 Как развернуть на Render
+## 🌟 Features
 
-1. Создай Web Service на [render.com](https://render.com)
-2. Подключи этот репозиторий
-3. Укажи:
-   - Build command: `pip install -r requirements.txt`
-   - Start command: `gunicorn app:app`
-   - Region: Singapore (если ты из Казахстана)
-4. Добавь переменную окружения:  
-   `BOT_TOKEN=твой_токен_бота`
-5. Установи webhook:
-   ```
-   https://api.telegram.org/bot<твой_токен>/setWebhook?url=https://<твой-проект>.onrender.com/webhook
-   ```
+- 🧠 **AI-Powered Mood Analysis** — understands your emotions through natural language input  
+- 📈 **Mood Graph** — (optional) tracks your mood history and visualizes it as a graph  
+- 🔁 **Real-time Interaction** — responses are instant via Telegram webhook  
+- ☁️ **No Server Setup** — fully deployed on [Render](https://render.com)  
 
 ---
 
-## ✨ Возможности
+## 💬 How it works
 
-- Анализирует настроение сообщений
-- Визуализирует настроение в виде графика
-- Хранит историю сообщений
-- Отвечает добрыми словами 😊
-
----
-
-## 🔮 Будущее
-
-Хочешь — можно добавить:
-- GPT-анализ (через OpenRouter API)
-- Личный дневник с поиском
-- Категории эмоций (радость, грусть, тревога и т.д.)
+1. Send a message to [@MoodieFixerBot](https://t.me/MoodieFixerBot)
+2. Moodie analyzes your message using Gemini 2.5
+3. You receive a personalized emotional response
+4. (Optional) Send `/graph` to view your weekly mood graph
 
 ---
 
-👤 Автор: @beqbuulaat  
-📅 Год: 2025
+## 🛠️ Tech Stack
+
+- Python 3.10  
+- Flask  
+- Telegram Bot API  
+- OpenRouter API (Gemini 2.5 Flash Lite)  
+- Render (Deployment)  
+
+---
+
+## 🚀 Commands
+
+| Command   | Description                        |
+|-----------|------------------------------------|
+| `/start`  | Start conversation with Moodie     |
+| *(text)*  | AI will analyze your mood          |
+| `/graph`  | View a mood graph (if enabled)     |
+
+---
+
+## 🔐 Environment Variables
+
+Set these on Render:
+
+- `BOT_TOKEN` — Your Telegram Bot Token  
+- `OPENROUTER_API_KEY` — Your OpenRouter API Key  
+
+---
+
+## 📸 Preview
+
+![Moodie Preview](preview-image.png)
+
+---
+
+## 💡 Inspiration
+
+Moodie was built to help users develop emotional self-awareness by simply chatting. It's an ideal side project for students, aspiring AI developers, or anyone interested in mental wellness tech.
+
+---
+
+## 📩 Contact
+
+Created by [beqbuulaat](https://github.com/beqbuulaat) — feel free to fork, clone, or contribute!
