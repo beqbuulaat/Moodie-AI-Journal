@@ -1,12 +1,40 @@
-from textblob import TextBlob
+import os
+import requests
+
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+MODEL = "mistralai/mythomax"  # или "openai/gpt-3.5-turbo"
 
 def analyze_mood(text):
-    blob = TextBlob(text)
-    polarity = blob.sentiment.polarity
+    if not OPENROUTER_API_KEY:
+        return "🤖 (Нет API ключа OpenRouter)"
 
-    if polarity > 0.2:
-        return "позитивное"
-    elif polarity < -0.2:
-        return "негативное"
-    else:
-        return "нейтральное"
+    prompt = f"""
+Ты — AI-бот, который анализирует настроение по сообщению пользователя.
+Определи, какое настроение в следующем тексте:
+
+"{text}"
+
+Ответь только одним словом: радостное, грустное, тревожное, злое, нейтральное или вдохновлённое.
+"""
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://moodie-ai-journal.onrender.com",  # укажи сюда свой домен
+        "X-Title": "Moodie AI Journal"
+    }
+
+    body = {
+        "model": MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ]
+    }
+
+    try:
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=body)
+        mood = response.json()["choices"][0]["message"]["content"].strip().lower()
+        return mood
+    except Exception as e:
+        print("❌ Ошибка AI анализа:", e)
+        return "неизвестно"
