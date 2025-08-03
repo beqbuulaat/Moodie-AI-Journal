@@ -16,25 +16,28 @@ def index():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.get_json()
-    print("📩 Received webhook data:", data)
+    print("📩 Received:", data)
 
-    if "message" in data:
-        chat_id = data["message"]["chat"]["id"]
-        text = data["message"].get("text", "")
+    if not data or "message" not in data:
+        return {"ok": False}, 400
 
-        if text == "/start":
-            send_message(chat_id, "Привет! Я — Moodie 😊 Напиши, как ты себя чувствуешь сегодня.")
-        else:
-            mood = "радостное" if "😊" in text or "счастлив" in text else "грустное"
-            send_message(chat_id, f"Я чувствую, что твоё настроение — {mood}.")
+    chat_id = data["message"]["chat"]["id"]
+    text = data["message"].get("text", "")
+
+    if text == "/start":
+        send_message(chat_id, "Привет! Я — Moodie 😊 Напиши, как ты себя чувствуешь сегодня.")
+    else:
+        mood = "радостное" if "😊" in text or "счастлив" in text else "грустное"
+        send_message(chat_id, f"Я чувствую, что твоё настроение — {mood}.")
 
     return {"ok": True}
 
 def send_message(chat_id, text):
-    url = f"{TELEGRAM_API_URL}/sendMessage"
-    payload = {"chat_id": chat_id, "text": text}
     try:
-        res = requests.post(url, json=payload)
-        print("📤 Telegram response:", res.text)
+        resp = requests.post(
+            f"{TELEGRAM_API_URL}/sendMessage",
+            json={"chat_id": chat_id, "text": text}
+        )
+        print("📤 Sent:", resp.text)
     except Exception as e:
-        print("❌ Ошибка отправки:", e)
+        print("❌ Error:", e)
