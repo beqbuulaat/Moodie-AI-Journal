@@ -60,3 +60,5 @@ def send_photo(chat_id, file_path):
             )
     except Exception as e:
         print("Ошибка при отправке фото:", e)
+        BOT_TOKEN = os.getenv("BOT_TOKEN")
+print("DEBUG: BOT_TOKEN =", BOT_TOKEN)  # ⬅️ ДОБАВЬ
