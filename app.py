@@ -2,11 +2,14 @@ from flask import Flask, request
 import requests
 import os
 from mood_analyzer import analyze_mood
-from mood_plotter import create_mood_graph
+# from mood_plotter import create_mood_graph  # Раскомментируй, если используешь
 
 app = Flask(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+if not BOT_TOKEN:
+    print("⚠️ BOT_TOKEN не установлен")
+
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 @app.route("/")
@@ -28,11 +31,11 @@ def webhook():
         send_message(chat_id, "Привет! Я — Moodie 😊 Напиши, как ты себя чувствуешь сегодня.")
 
     elif text == "/graph":
-        path = create_mood_graph(chat_id)
-        if path:
-            send_photo(chat_id, path)
-        else:
-            send_message(chat_id, "У тебя пока нет записей 😔")
+        # path = create_mood_graph(chat_id)
+        # if path:
+        #     send_photo(chat_id, path)
+        # else:
+        send_message(chat_id, "Пока функция графика не активирована 😅")
 
     else:
         mood = analyze_mood(text)
@@ -50,14 +53,14 @@ def send_message(chat_id, text):
     except Exception as e:
         print("❌ Ошибка отправки сообщения:", e)
 
-def send_photo(chat_id, file_path):
-    try:
-        with open(file_path, 'rb') as photo:
-            resp = requests.post(
-                f"{TELEGRAM_API_URL}/sendPhoto",
-                data={"chat_id": chat_id},
-                files={"photo": photo}
-            )
-            print("📷 Фото отправлено:", resp.text)
-    except Exception as e:
-        print("❌ Ошибка отправки фото:", e)
+# def send_photo(chat_id, file_path):
+#     try:
+#         with open(file_path, 'rb') as photo:
+#             resp = requests.post(
+#                 f"{TELEGRAM_API_URL}/sendPhoto",
+#                 data={"chat_id": chat_id},
+#                 files={"photo": photo}
+#             )
+#             print("📷 Фото отправлено:", resp.text)
+#     except Exception as e:
+#         print("❌ Ошибка отправки фото:", e)
