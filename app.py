@@ -17,6 +17,9 @@ def index():
 def webhook():
     data = request.get_json()
 
+    if not data:
+        return {"ok": False, "error": "No data"}, 400
+
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
         text = data["message"].get("text", "")
@@ -40,12 +43,19 @@ def webhook():
 def send_message(chat_id, text):
     url = f"{TELEGRAM_API_URL}/sendMessage"
     payload = {"chat_id": chat_id, "text": text}
-    requests.post(url, json=payload)
+    try:
+        requests.post(url, json=payload)
+    except Exception as e:
+        print("Ошибка при отправке сообщения:", e)
 
 def send_photo(chat_id, file_path):
-    with open(file_path, 'rb') as photo:
-        requests.post(
-            f"{TELEGRAM_API_URL}/sendPhoto",
-            data={"chat_id": chat_id},
-            files={"photo": photo}
-        )
+    url = f"{TELEGRAM_API_URL}/sendPhoto"
+    try:
+        with open(file_path, 'rb') as photo:
+            requests.post(
+                url,
+                data={"chat_id": chat_id},
+                files={"photo": photo}
+            )
+    except Exception as e:
+        print("Ошибка при отправке фото:", e)
